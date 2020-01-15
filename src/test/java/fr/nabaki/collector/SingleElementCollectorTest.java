@@ -1,4 +1,4 @@
-package collectors;
+package fr.nabaki.collector;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -7,11 +7,11 @@ import java.util.*;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
-public class CustomCollectorTest {
+public class SingleElementCollectorTest {
 
-    private final List<String> empty = Collections.emptyList();
-    private final List<String> single = Collections.singletonList("toto");
-    private final List<String> multiple = Arrays.asList("toto", "tata");
+    private final List<String> emptyList = Collections.emptyList();
+    private final List<String> singleElementList = Collections.singletonList("element1");
+    private final List<String> multipleElementsList = Arrays.asList("element1", "element2");
 
     private final RuntimeException customRuntimeException = new RuntimeException("Not the right number of elements !");
     private final NoSuchElementException noSuchElementException = new NoSuchElementException("No value present");
@@ -19,72 +19,72 @@ public class CustomCollectorTest {
 
     @Test
     public void zeroOrOneForEmpty() {
-        Assert.assertEquals(empty.stream().collect(CustomCollector.zeroOrOne()), Optional.empty());
+        Assert.assertEquals(emptyList.stream().collect(SingleElementCollector.zeroOrOne()), Optional.empty());
     }
 
     @Test
     public void zeroOrOneForSingle() {
-        Assert.assertEquals(single.stream().collect(CustomCollector.zeroOrOne()), Optional.of(single.get(0)));
+        Assert.assertEquals(singleElementList.stream().collect(SingleElementCollector.zeroOrOne()), Optional.of(singleElementList.get(0)));
     }
 
     @Test
     public void zeroOrOneForMultiple() {
-        assertThatThrownBy(() -> multiple.stream().collect(CustomCollector.zeroOrOne()))
+        assertThatThrownBy(() -> multipleElementsList.stream().collect(SingleElementCollector.zeroOrOne()))
                 .isInstanceOf(illegalStateException.getClass())
                 .hasMessage(illegalStateException.getMessage());
     }
 
     @Test
     public void zeroOrOneCustomForEmpty() {
-        Assert.assertEquals(empty.stream().collect(CustomCollector.zeroOrOne(() -> customRuntimeException)), Optional.empty());
+        Assert.assertEquals(emptyList.stream().collect(SingleElementCollector.zeroOrOne(() -> customRuntimeException)), Optional.empty());
     }
 
     @Test
     public void zeroOrOneCustomForSingle() {
-        Assert.assertEquals(single.stream().collect(CustomCollector.zeroOrOne(() -> customRuntimeException)), Optional.of(single.get(0)));
+        Assert.assertEquals(singleElementList.stream().collect(SingleElementCollector.zeroOrOne(() -> customRuntimeException)), Optional.of(singleElementList.get(0)));
     }
 
     @Test
     public void zeroOrOneCustomForMultiple() {
-        assertThatThrownBy(() -> multiple.stream().collect(CustomCollector.zeroOrOne(() -> customRuntimeException)))
+        assertThatThrownBy(() -> multipleElementsList.stream().collect(SingleElementCollector.zeroOrOne(() -> customRuntimeException)))
                 .isInstanceOf(customRuntimeException.getClass())
                 .hasMessage(customRuntimeException.getMessage());
     }
 
     @Test
     public void onlyOneForEmpty() {
-        assertThatThrownBy(() -> empty.stream().collect(CustomCollector.onlyOne()))
+        assertThatThrownBy(() -> emptyList.stream().collect(SingleElementCollector.onlyOne()))
                 .isInstanceOf(noSuchElementException.getClass())
                 .hasMessage(noSuchElementException.getMessage());
     }
 
     @Test
     public void onlyOneForSingle() {
-        Assert.assertEquals(single.stream().collect(CustomCollector.onlyOne()), single.get(0));
+        Assert.assertEquals(singleElementList.stream().collect(SingleElementCollector.onlyOne()), singleElementList.get(0));
     }
 
     @Test
     public void onlyOneForMultiple() {
-        assertThatThrownBy(() -> multiple.stream().collect(CustomCollector.onlyOne()))
+        assertThatThrownBy(() -> multipleElementsList.stream().collect(SingleElementCollector.onlyOne()))
                 .isInstanceOf(illegalStateException.getClass())
                 .hasMessage(illegalStateException.getMessage());
     }
 
     @Test
     public void onlyOneCustomForEmpty() {
-        assertThatThrownBy(() -> empty.stream().collect(CustomCollector.onlyOne(() -> customRuntimeException)))
+        assertThatThrownBy(() -> emptyList.stream().collect(SingleElementCollector.onlyOne(() -> customRuntimeException)))
                 .isInstanceOf(noSuchElementException.getClass())
                 .hasMessage(noSuchElementException.getMessage());
     }
 
     @Test
     public void onlyOneCustomForSingle() {
-        Assert.assertEquals(single.stream().collect(CustomCollector.onlyOne(() -> customRuntimeException)), single.get(0));
+        Assert.assertEquals(singleElementList.stream().collect(SingleElementCollector.onlyOne(() -> customRuntimeException)), singleElementList.get(0));
     }
 
     @Test
     public void onlyOneCustomForMultiple() {
-        assertThatThrownBy(() -> multiple.stream().collect(CustomCollector.onlyOne(() -> customRuntimeException)))
+        assertThatThrownBy(() -> multipleElementsList.stream().collect(SingleElementCollector.onlyOne(() -> customRuntimeException)))
                 .isInstanceOf(customRuntimeException.getClass())
                 .hasMessage(customRuntimeException.getMessage());
     }
