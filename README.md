@@ -1,4 +1,4 @@
-# CustomCollectors
+# Nabaki's collectors
 
 Here are some customed collectors which can help you in everyday life.
 
